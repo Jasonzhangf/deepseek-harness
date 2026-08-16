@@ -61,6 +61,9 @@ const SKIP_WORKSPACE_BUILD: UserConfig = { entry: '' }
  */
 const RUNTIME_STORE_EXEMPTION = '@deepseek-ai/dsh-client-runtime/client'
 
+/** Node consumers use the neutral face; browser bundles reuse the loaded Runtime module instance. */
+const RUNTIME_PRESENTATION_FACE = '@deepseek-ai/dsh-client-runtime/presentation'
+
 /** Externals resolved from the loader module table: the platform seed entries plus the documented runtime exemption. */
 export const CLIENT_EXTERNALS: readonly string[] = [...PLATFORM_MODULES, RUNTIME_STORE_EXEMPTION]
 
@@ -215,6 +218,9 @@ function clientConfig(id: string, entry: string): UserConfig {
       name: 'dsh-client-bundle-purity',
       resolveId(source: string) {
         if (!source.startsWith('@deepseek-ai/')) return null
+        if (source === RUNTIME_PRESENTATION_FACE) {
+          return { id: RUNTIME_STORE_EXEMPTION, external: true }
+        }
         if (CLIENT_EXTERNALS.includes(source)) return null // platform module: external wins
         if (VENDORED_LIBRARY.test(source)) return null // vendored library: inline, no shared identity
         if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point

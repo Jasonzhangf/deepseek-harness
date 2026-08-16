@@ -2,7 +2,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import type {
   ConversationMatch, ConversationNodeContext, ConversationNodeDefinition, TurnErrorNode,
 } from '@deepseek-ai/dsh-client-runtime/client'
-import { displayFailureMessage } from '@deepseek-ai/dsh-client-runtime/client'
+import { displayFailureMessage } from '@deepseek-ai/dsh-client-runtime/presentation'
 import type {} from '@deepseek-ai/dsh-llm-retry/types'
 import { chatNode } from './common.ts'
 

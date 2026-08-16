@@ -9,7 +9,7 @@ import { clientOnly } from '../tsdown.client.ts'
  * never read lib.
  */
 export default clientOnly([{
-  entry: ['lib/types/index.js', 'lib/types/invariant.js'],
+  entry: ['lib/types/index.js', 'lib/types/invariant.js', 'lib/types/markdown.js'],
   outDir: 'lib',
   format: ['esm'],
   platform: 'neutral',

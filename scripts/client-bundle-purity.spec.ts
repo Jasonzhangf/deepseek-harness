@@ -101,6 +101,13 @@ describe('client bundle purity gate', () => {
       entry => entry.startsWith('@deepseek-ai/') && entry.endsWith('/client'))
     expect(clientChannels).toEqual(['@deepseek-ai/dsh-client-runtime/client'])
   })
+
+  it('maps the platform-neutral Runtime face onto the browser-loaded Runtime instance', () => {
+    expect(resolveId('@deepseek-ai/dsh-client-runtime/presentation')).toEqual({
+      id: '@deepseek-ai/dsh-client-runtime/client',
+      external: true,
+    })
+  })
 })
 
 describe('client bundle debug artifacts', () => {
