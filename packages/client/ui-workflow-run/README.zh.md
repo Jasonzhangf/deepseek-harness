@@ -20,6 +20,10 @@
 
 本包把 Definition、locale 字典和 `workflow-run` renderer 都注册为 Cordis effect；移除客户端 entry 会撤销三者。shipped Web bundle 在 `ui-conversation` 与 `ui-tool` 之后装配该插件。
 
+## 平台无关导出
+
+Node 消费方通过 `@deepseek-ai/dsh-client-ui-workflow-run/presentation` 导入 workflow-run Conversation Definition。
+
 ## 模型体验
 
 无，因为本包只为人类展示持久 Session 事实，不增加 prompt、工具 schema、请求内容或模型可见结果。

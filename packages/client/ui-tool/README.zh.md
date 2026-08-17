@@ -34,6 +34,10 @@ owner 载荷为 `ToolCallOwnerProps`：`callId`、`toolName`、冻结的 `block`
 
 各类卡片的上限与 fallback 规则仍由对应的 [terminal](../../../.agents/notes/implemented/feature/2026-07-28-web-terminal-card.md)、[diff](../../../.agents/notes/implemented/feature/2026-07-30-web-diff-card.md)、[read](../../../.agents/notes/implemented/feature/2026-07-30-web-read-card-frontend.md)、[search](../../../.agents/notes/implemented/feature/2026-07-30-web-search-card.md) 和 [web](../../../.agents/notes/implemented/feature/2026-07-30-web-result-card-frontend.md) Agent Note 负责。
 
+## 平台无关导出
+
+Node 消费方通过 `@deepseek-ai/dsh-client-ui-tool/presentation` 导入通用 Tool 展示模型。
+
 ## 模型体验
 
 无，因为本包只渲染已经记录的工具调用和结果，不改变模型请求、工具执行或会话事件。

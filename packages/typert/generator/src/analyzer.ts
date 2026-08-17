@@ -2641,6 +2641,13 @@ function hostExportSubpaths(manifest: Record<string, unknown>): string[] {
     .map(([subpath]) => subpath)
     .filter(subpath => subpath !== './client'
       && !subpath.startsWith('./client/')
+      // Platform-neutral presentation faces re-export client business
+      // projections for plain-Node consumers; they register no host
+      // services, and analyzing them in the host program drags the client
+      // face's TypertContextMap declarations into one program with the host
+      // face's (same wire id, same wire type — a collision, not a conflict).
+      && subpath !== './presentation'
+      && !subpath.startsWith('./presentation/')
       && subpath !== './remote')
 }
 

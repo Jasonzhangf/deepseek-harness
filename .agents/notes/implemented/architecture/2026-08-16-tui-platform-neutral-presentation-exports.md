@@ -21,7 +21,9 @@ The owning client packages publish platform-neutral subpaths for the TUI composi
 
 These faces re-export existing owner implementations. They do not create a second Session projection, copy browser definitions, mutate Session truth, or derive control state. The Runtime presentation face is mapped to the already loaded Runtime client instance inside browser bundles so the browser keeps one registry identity, while plain Node consumers load the neutral artifact.
 
-Each face has an explicit package export, declaration entry, bundled runtime entry, and `files` payload. The TUI presentation export map checks package manifests, built declaration symbols, runtime symbols, packed import closure, plain-Node loading, and forbidden browser imports. The map and gate are part of the repository build path.
+Each face has an explicit package export, declaration entry, bundled runtime entry, and `files` payload. The TUI presentation export map checks package manifests, built declaration symbols, runtime symbols, packed import closure, plain-Node loading, and forbidden browser imports across the whole packed closure, not only the entry artifact. The map and gate are part of the repository build path.
+
+The Typert host face excludes `./presentation` export subpaths: the faces re-export client business projections for plain Node, register no host services, and analyzing them in the host program would collide the client face's `agent` TypertContextMap declaration (same wire id and wire type as the host face's) into one program. The client face analysis still owns them.
 
 ## Alternatives considered
 

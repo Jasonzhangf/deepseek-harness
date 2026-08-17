@@ -57,7 +57,7 @@ function packagePayload(packageDir: string): Set<string> {
       encoding: 'utf8',
     })
     if (result.error !== undefined || result.status !== 0) {
-      throw new Error(`${result.stdout ?? ''}${result.stderr ?? ''}`.trim())
+      throw new Error(`${result.stdout}${result.stderr}`.trim())
     }
     const tarball = readdirSync(destination).find(name => name.endsWith('.tgz'))
     if (tarball === undefined) throw new Error('pnpm pack produced no tarball')
@@ -65,7 +65,7 @@ function packagePayload(packageDir: string): Set<string> {
       encoding: 'utf8',
     })
     if (listing.error !== undefined || listing.status !== 0) {
-      throw new Error(`${listing.stdout ?? ''}${listing.stderr ?? ''}`.trim())
+      throw new Error(`${listing.stdout}${listing.stderr}`.trim())
     }
     return new Set(listing.stdout.split('\n')
       .filter(line => line !== '')
@@ -89,6 +89,27 @@ function relativeImportPaths(text: string, filePath: string): string[] {
   return imports
 }
 
+function forbiddenRuntimeImportSpecifiers(
+  text: string,
+  filePath: string,
+  forbidden: readonly string[],
+): string[] {
+  const source = ts.createSourceFile(filePath, text, ts.ScriptTarget.ESNext, true, ts.ScriptKind.JS)
+  const violations: string[] = []
+  for (const statement of source.statements) {
+    if (!ts.isImportDeclaration(statement) && !ts.isExportDeclaration(statement)) continue
+    const specifier = statement.moduleSpecifier
+    if (specifier === undefined || !ts.isStringLiteral(specifier)) continue
+    if (forbidden.some(entry => specifier.text === entry || specifier.text.startsWith(`${entry}/`))) {
+      violations.push(`forbidden runtime import ${specifier.text}`)
+    }
+    if (specifier.text.endsWith('.css') || specifier.text.endsWith('.tsx')) {
+      violations.push(`browser-only runtime import ${specifier.text}`)
+    }
+  }
+  return violations
+}
+
 function artifactPathVariants(specifier: string, sourcePath: string): string[] {
   const base = resolve(sourcePath, '..', specifier)
   return [
@@ -102,7 +123,11 @@ function artifactPathVariants(specifier: string, sourcePath: string): string[] {
   ]
 }
 
-function verifyPackedImportClosure(entry: PackedEntry, payload: Set<string>): void {
+function verifyPackedImportClosure(
+  entry: PackedEntry,
+  payload: Set<string>,
+  forbidden: readonly string[],
+): void {
   const pending = [entry.runtimePath]
   const seen = new Set<string>()
   while (pending.length > 0) {
@@ -122,6 +147,9 @@ function verifyPackedImportClosure(entry: PackedEntry, payload: Set<string>): vo
     const text = normalized === entry.runtimePath
       ? entry.runtimeText
       : readFileSync(absolute, 'utf8')
+    for (const violation of forbiddenRuntimeImportSpecifiers(text, absolute, forbidden)) {
+      failures.push(`${entry.runtimePath}: ${normalized} ${violation}`)
+    }
     for (const specifier of relativeImportPaths(text, absolute)) {
       const resolved = artifactPathVariants(specifier, absolute)
         .map(path => path.replace(`${entry.packageDir}/`, ''))
@@ -172,20 +200,11 @@ for (const entry of feature.exports) {
   if (!payload.has(entry.runtime_artifact)) {
     failures.push(`${entry.package}${entry.subpath.slice(1)}: npm payload omits ${entry.runtime_artifact}`)
   }
-  verifyPackedImportClosure({ packageDir, runtimePath: entry.runtime_artifact, runtimeText }, payload)
-  const runtimeSource = ts.createSourceFile(runtimePath, runtimeText, ts.ScriptTarget.ESNext, true, ts.ScriptKind.JS)
-  for (const statement of runtimeSource.statements) {
-    if (!ts.isImportDeclaration(statement) && !ts.isExportDeclaration(statement)) continue
-    const specifier = statement.moduleSpecifier
-    if (specifier === undefined || !ts.isStringLiteral(specifier)) continue
-    if (feature.forbidden_runtime_imports.some(forbidden =>
-      specifier.text === forbidden || specifier.text.startsWith(`${forbidden}/`))) {
-      failures.push(`${entry.package}${entry.subpath.slice(1)}: forbidden runtime import ${specifier.text}`)
-    }
-    if (specifier.text.endsWith('.css') || specifier.text.endsWith('.tsx')) {
-      failures.push(`${entry.package}${entry.subpath.slice(1)}: browser-only runtime import ${specifier.text}`)
-    }
-  }
+  verifyPackedImportClosure(
+    { packageDir, runtimePath: entry.runtime_artifact, runtimeText },
+    payload,
+    feature.forbidden_runtime_imports,
+  )
 
   try {
     const runtime = await import(`${pathToFileURL(runtimePath).href}?verify=${Date.now()}`) as Record<string, unknown>

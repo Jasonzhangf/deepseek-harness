@@ -20,6 +20,10 @@ A member opens a child Session only while every current fact agrees: the member 
 
 The package registers its Definition, locale dictionary, and `workflow-run` renderer as Cordis effects. Removing the client entry retracts all three contributions. The shipped Web bundle includes the plugin after `ui-conversation` and `ui-tool`.
 
+## Platform-neutral exports
+
+Node consumers import the workflow-run Conversation Definition through `@deepseek-ai/dsh-client-ui-workflow-run/presentation`.
+
 ## Model Experience
 
 None, as this package renders durable Session facts for humans and adds no prompt, tool schema, request content, or model-visible result.

@@ -173,8 +173,8 @@ function expectedDshPackageFiles(manifest: PackageManifest): readonly string[] {
     // as a row module, so it cannot ride inside the package entry.
     ...exportDefault(manifest, './startup') === './lib/startup.js' ? ['lib/startup.js'] : [],
     ...exportDefault(manifest, './presentation') === './lib/presentation.js' ? ['lib/presentation.js'] : [],
-    ...exportDefault(manifest, './markdown') === './lib/markdown.js' ? ['lib/markdown.js'] : [],
-    ...exportDefault(manifest, './markdown') === './lib/markdown.js' ? ['lib/parse-*.js'] : [],
+    ...exportDefault(manifest, './markdown') === './lib/markdown.js'
+      ? ['lib/markdown.js', 'lib/parse-*.js'] : [],
     ...extras,
     // Subpaths whose runtime default is the tsc-emitted tree (lib/types/*.js —
     // browser-safe source channels rehomed off src so plain Node can import

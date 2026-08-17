@@ -34,6 +34,10 @@ This package currently owns the generic fallback and the built-in shell/pwsh, re
 
 Card-specific limits and fallback rules remain in the owning [terminal](../../../.agents/notes/implemented/feature/2026-07-28-web-terminal-card.md), [diff](../../../.agents/notes/implemented/feature/2026-07-30-web-diff-card.md), [read](../../../.agents/notes/implemented/feature/2026-07-30-web-read-card-frontend.md), [search](../../../.agents/notes/implemented/feature/2026-07-30-web-search-card.md), and [web](../../../.agents/notes/implemented/feature/2026-07-30-web-result-card-frontend.md) notes.
 
+## Platform-neutral exports
+
+Node consumers import the generic Tool presentation model through `@deepseek-ai/dsh-client-ui-tool/presentation`.
+
 ## Model Experience
 
 None, as this package renders already logged Tool calls and results without altering model requests, Tool execution, or session events.

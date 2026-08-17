@@ -8,15 +8,30 @@
       "resource_id": "conversation.presentation",
       "kind": "projection",
       "truth_owner": "@deepseek-ai/dsh-client-runtime",
-      "allowed_operations": ["register_definition", "replace_window", "append", "prepend", "read_snapshot"],
-      "forbidden_operations": ["mutate_session_truth", "derive_control_state"]
+      "allowed_operations": [
+        "register_definition",
+        "replace_window",
+        "append",
+        "prepend",
+        "read_snapshot"
+      ],
+      "forbidden_operations": [
+        "mutate_session_truth",
+        "derive_control_state"
+      ]
     },
     {
       "resource_id": "markdown.grammar",
       "kind": "business_definition",
       "truth_owner": "@deepseek-ai/dsh-client-ui-primitives",
-      "allowed_operations": ["parse_streaming_gfm", "parse_settled_gfm_math"],
-      "forbidden_operations": ["render_dom", "derive_control_state"]
+      "allowed_operations": [
+        "parse_streaming_gfm",
+        "parse_settled_gfm_math"
+      ],
+      "forbidden_operations": [
+        "render_dom",
+        "derive_control_state"
+      ]
     }
   ],
   "resource_edges": [
@@ -35,22 +50,41 @@
     {
       "node_id": "TuiProjectionIn01Definitions",
       "owner": "@deepseek-ai/dsh-client-ui-conversation/presentation",
-      "entry_symbols": ["registerConversationNodes", "toolDefinition", "retryDefinition", "turnErrorDefinition", "turnMaxTokensDefinition"]
+      "entry_symbols": [
+        "registerConversationNodes",
+        "toolDefinition",
+        "retryDefinition",
+        "turnErrorDefinition",
+        "turnMaxTokensDefinition"
+      ]
     },
     {
       "node_id": "TuiProjectionIn02Assembler",
       "owner": "@deepseek-ai/dsh-client-runtime/presentation",
-      "entry_symbols": ["ConversationEventRegistry", "ConversationViewRegistry", "ConversationNodeAssembler"]
+      "entry_symbols": [
+        "ConversationEventRegistry",
+        "ConversationViewRegistry",
+        "ConversationNodeAssembler"
+      ]
     },
     {
       "node_id": "TuiProjectionOut03Views",
       "owner": "DSH presentation packages",
-      "entry_symbols": ["ChatSnapshotBuilder", "workflowRunDefinition", "trajectoryViewDefinition", "ToolPresentationModel"]
+      "entry_symbols": [
+        "ChatSnapshotBuilder",
+        "workflowRunDefinition",
+        "trajectoryViewDefinition",
+        "ToolPresentationModel"
+      ]
     },
     {
       "node_id": "TuiMarkdownIn01Grammar",
       "owner": "@deepseek-ai/dsh-client-ui-primitives/markdown",
-      "entry_symbols": ["parseGfm", "parseGfmWithMath", "IncrementalMarkdownParser"]
+      "entry_symbols": [
+        "parseGfm",
+        "parseGfmWithMath",
+        "IncrementalMarkdownParser"
+      ]
     }
   ],
   "mainline_call_map": [
@@ -68,27 +102,39 @@
   "modules": [
     {
       "module_id": "runtime.presentation",
-      "owned_paths": ["packages/client/runtime/src/presentation.ts"]
+      "owned_paths": [
+        "packages/client/runtime/src/presentation.ts"
+      ]
     },
     {
       "module_id": "conversation.presentation",
-      "owned_paths": ["packages/client/ui-conversation/src/presentation.ts"]
+      "owned_paths": [
+        "packages/client/ui-conversation/src/presentation.ts"
+      ]
     },
     {
       "module_id": "tool.presentation",
-      "owned_paths": ["packages/client/ui-tool/src/presentation.ts"]
+      "owned_paths": [
+        "packages/client/ui-tool/src/presentation.ts"
+      ]
     },
     {
       "module_id": "workflow.presentation",
-      "owned_paths": ["packages/client/ui-workflow-run/src/presentation.ts"]
+      "owned_paths": [
+        "packages/client/ui-workflow-run/src/presentation.ts"
+      ]
     },
     {
       "module_id": "trajectory.presentation",
-      "owned_paths": ["packages/client/ui-trajectory/src/presentation.ts"]
+      "owned_paths": [
+        "packages/client/ui-trajectory/src/presentation.ts"
+      ]
     },
     {
       "module_id": "markdown.presentation",
-      "owned_paths": ["packages/client/ui-primitives/src/markdown.ts"]
+      "owned_paths": [
+        "packages/client/ui-primitives/src/markdown.ts"
+      ]
     }
   ],
   "exports": [
@@ -99,8 +145,67 @@
       "source": "packages/client/runtime/src/presentation.ts",
       "runtime_artifact": "lib/presentation.js",
       "types_artifact": "lib/types/presentation.d.ts",
-      "value_symbols": ["ConversationEventRegistry", "ConversationViewRegistry", "ConversationNodeAssembler"],
-      "type_symbols": []
+      "value_symbols": [
+        "ConversationEventRegistry",
+        "ConversationViewRegistry",
+        "ConversationNodeAssembler",
+        "isAppendSurfaceEvent",
+        "isReplacementSurfaceEvent",
+        "displayFailureMessage",
+        "EMPTY_CHAT_SNAPSHOT",
+        "EMPTY_CONVERSATION_VIEWS",
+        "toAssistantBlock",
+        "toAssistantBlocks",
+        "emptyAssistantBlock",
+        "isTokenDelta",
+        "contextForm",
+        "contextProvenance"
+      ],
+      "type_symbols": [
+        "ConversationEventDefinitions",
+        "ConversationRuntime",
+        "ConversationViewDefinitions",
+        "ChatConversationViewNode",
+        "ConversationContextReader",
+        "ConversationEventInput",
+        "ConversationLocation",
+        "ConversationMatch",
+        "ConversationNodeContext",
+        "ConversationNodeDefinition",
+        "ConversationPublication",
+        "ConversationTimelineSnapshot",
+        "ConversationTurnDataMap",
+        "ConversationViewBuilder",
+        "ConversationViewDefinition",
+        "ConversationViewNode",
+        "ConversationViewSnapshotMap",
+        "ConversationViewSnapshotStore",
+        "StepLocation",
+        "TurnLocation",
+        "AssistantBlock",
+        "AssistantMessageNode",
+        "ChatLocationNodeIndex",
+        "ChatNodeStore",
+        "ChatSnapshot",
+        "CommandNode",
+        "CompactionSummaryNode",
+        "ContextMessageNode",
+        "ConversationNode",
+        "LegacyConversationSlice",
+        "ModelRetryNode",
+        "PartialAssistant",
+        "RunningToolCall",
+        "SteeringMessageNode",
+        "ToolCallBlock",
+        "ToolResultNode",
+        "TurnErrorNode",
+        "TurnMaxTokensNode",
+        "UnknownSurfaceNode",
+        "UserMessageNode",
+        "ContextProvenanceView",
+        "ContextRole",
+        "KnownContextForm"
+      ]
     },
     {
       "package_dir": "packages/client/ui-conversation",
@@ -109,8 +214,27 @@
       "source": "packages/client/ui-conversation/src/presentation.ts",
       "runtime_artifact": "lib/presentation.js",
       "types_artifact": "lib/types/presentation.d.ts",
-      "value_symbols": ["registerConversationNodes", "ChatSnapshotBuilder", "chatViewDefinition", "unknownFallbackDefinition", "toolDefinition", "retryDefinition", "turnErrorDefinition", "turnMaxTokensDefinition"],
-      "type_symbols": []
+      "value_symbols": [
+        "registerConversationNodes",
+        "ChatSnapshotBuilder",
+        "chatViewDefinition",
+        "unknownFallbackDefinition",
+        "toolDefinition",
+        "retryDefinition",
+        "turnErrorDefinition",
+        "turnMaxTokensDefinition"
+      ],
+      "type_symbols": [
+        "AssistantChatData",
+        "ChatNode",
+        "ChatNodeDataMap",
+        "ChatNodeKind",
+        "FinalAssistantChatData",
+        "ManualCompactionChatData",
+        "RetryChatData",
+        "ToolChatData",
+        "TurnTailChatData"
+      ]
     },
     {
       "package_dir": "packages/client/ui-tool",
@@ -119,8 +243,14 @@
       "source": "packages/client/ui-tool/src/presentation.ts",
       "runtime_artifact": "lib/presentation.js",
       "types_artifact": "lib/types/presentation.d.ts",
-      "value_symbols": ["toolRowModel"],
-      "type_symbols": ["ToolPresentationModel"]
+      "value_symbols": [
+        "toolRowModel"
+      ],
+      "type_symbols": [
+        "ToolPresentationModel",
+        "ToolRowState",
+        "ToolRowVariant"
+      ]
     },
     {
       "package_dir": "packages/client/ui-workflow-run",
@@ -129,8 +259,15 @@
       "source": "packages/client/ui-workflow-run/src/presentation.ts",
       "runtime_artifact": "lib/presentation.js",
       "types_artifact": "lib/types/presentation.d.ts",
-      "value_symbols": ["workflowRunDefinition"],
-      "type_symbols": []
+      "value_symbols": [
+        "workflowRunDefinition"
+      ],
+      "type_symbols": [
+        "WorkflowRunChatData",
+        "WorkflowRunMemberData",
+        "WorkflowRunPhaseData",
+        "WorkflowRunStatus"
+      ]
     },
     {
       "package_dir": "packages/client/ui-trajectory",
@@ -139,8 +276,13 @@
       "source": "packages/client/ui-trajectory/src/presentation.ts",
       "runtime_artifact": "lib/presentation.js",
       "types_artifact": "lib/types/presentation.d.ts",
-      "value_symbols": ["trajectoryViewDefinition", "registerTrajectoryConversationView"],
-      "type_symbols": []
+      "value_symbols": [
+        "registerTrajectoryConversationView",
+        "trajectoryViewDefinition"
+      ],
+      "type_symbols": [
+        "TrajectorySnapshot"
+      ]
     },
     {
       "package_dir": "packages/client/ui-primitives",
@@ -149,11 +291,22 @@
       "source": "packages/client/ui-primitives/src/markdown.ts",
       "runtime_artifact": "lib/markdown.js",
       "types_artifact": "lib/types/markdown.d.ts",
-      "value_symbols": ["parseGfm", "parseGfmWithMath", "IncrementalMarkdownParser"],
-      "type_symbols": []
+      "value_symbols": [
+        "parseGfm",
+        "parseGfmWithMath",
+        "IncrementalMarkdownParser"
+      ],
+      "type_symbols": [
+        "IncrementalBlocks",
+        "PositionedBlock"
+      ]
     }
   ],
-  "forbidden_runtime_imports": ["react", "react-dom", "@deepseek-ai/dsh-client-web-react"],
+  "forbidden_runtime_imports": [
+    "react",
+    "react-dom",
+    "@deepseek-ai/dsh-client-web-react"
+  ],
   "verification": {
     "white_box": "pnpm exec vitest run scripts/verify-tui-presentation-exports.spec.ts",
     "build": "pnpm run build",
