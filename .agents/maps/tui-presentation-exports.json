@@ -159,6 +159,6 @@
     "build": "pnpm run build",
     "artifact": "pnpm run verify-tui-presentation-exports",
     "package": "pnpm run publint && pnpm run verify-node-next-types",
-    "install": "pnpm run release:pack && pnpm run release:verify-packed-install -- --family dsh"
+    "install": "pnpm run release:pack --family dsh --out dist/npm && pnpm run release:pack --family vendor --out dist/npm-vendor && pnpm --dir native/landlock-run run build:ts && pnpm --dir native/landlock-run/packages/entry pack --pack-destination dist/npm-landlock && pnpm run release:verify-packed-install --family dsh --from dist/npm --from dist/npm-vendor --from dist/npm-landlock"
   }
 }
