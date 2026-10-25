@@ -1,0 +1,159 @@
+{
+  "id": "schedule-wakeup-sese",
+  "version": "1",
+  "meta": {
+    "title": "调度提醒本地分发与状态唤醒生命周期图",
+    "designStatus": "ACTIVE-DESIGN",
+    "scope": "packages/schedule/schedule/src/runtime.ts",
+    "trigger": "定时器触发或调度任务存储变更请求驱动分发。",
+    "coreInvariant": "到期提醒分发严格按单源单汇执行：到期扫描 -> 解析代理 -> 原生状态分流（运行中 steer，空闲 followup 唤醒） -> 刷新会话持久化 -> 记录持久化凭据或显式错误；交付凭据仅记录收件箱持久化收据，绝不伪造模型执行结果。"
+  },
+  "inputs": [
+    {
+      "id": "due_reminder_task",
+      "schema": "Object"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "scan_and_filter_due",
+      "operator": "schedule-scan-due",
+      "operator_version": "1",
+      "inputs": [
+        "due_reminder_task"
+      ],
+      "output": {
+        "id": "due_reminder_group",
+        "schema": "Object"
+      },
+      "input_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "output_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "iterator": "Whole"
+    },
+    {
+      "id": "resolve_target_agent",
+      "operator": "schedule-resolve-agent",
+      "operator_version": "1",
+      "inputs": [
+        "due_reminder_group"
+      ],
+      "output": {
+        "id": "resolved_agent_context",
+        "schema": "Object"
+      },
+      "input_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "output_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "iterator": "Whole"
+    },
+    {
+      "id": "dispatch_steer_or_followup",
+      "operator": "schedule-dispatch-reminder",
+      "operator_version": "1",
+      "inputs": [
+        "resolved_agent_context"
+      ],
+      "output": {
+        "id": "inbox_spliced_envelope",
+        "schema": "Object"
+      },
+      "input_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "output_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "iterator": "Whole"
+    },
+    {
+      "id": "flush_session_persistence",
+      "operator": "schedule-flush-session",
+      "operator_version": "1",
+      "inputs": [
+        "inbox_spliced_envelope"
+      ],
+      "output": {
+        "id": "flushed_session_receipt",
+        "schema": "Object"
+      },
+      "input_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "output_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "iterator": "Whole"
+    },
+    {
+      "id": "record_delivery_result",
+      "operator": "schedule-record-result",
+      "operator_version": "1",
+      "inputs": [
+        "flushed_session_receipt"
+      ],
+      "output": {
+        "id": "schedule_delivery_record",
+        "schema": "Object"
+      },
+      "input_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "output_selector": {
+        "include": [],
+        "exclude": [],
+        "predicate": null
+      },
+      "iterator": "Whole"
+    }
+  ],
+  "edges": [
+    {
+      "from": "scan_and_filter_due",
+      "to": "resolve_target_agent",
+      "arc_id": "due_reminder_group"
+    },
+    {
+      "from": "resolve_target_agent",
+      "to": "dispatch_steer_or_followup",
+      "arc_id": "resolved_agent_context"
+    },
+    {
+      "from": "dispatch_steer_or_followup",
+      "to": "flush_session_persistence",
+      "arc_id": "inbox_spliced_envelope"
+    },
+    {
+      "from": "flush_session_persistence",
+      "to": "record_delivery_result",
+      "arc_id": "flushed_session_receipt"
+    }
+  ],
+  "outputs": [
+    "schedule_delivery_record"
+  ]
+}

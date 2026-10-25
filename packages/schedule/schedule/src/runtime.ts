@@ -122,8 +122,9 @@ export class ScheduleRuntime {
         const message = createUserMessage({
           content: [{ type: 'text', text }], source: { kind: 'schedule' },
         })
-        // followup synchronously appends the inbox splice before flush observes the Session.
-        agent.followup(message)
+        // Both operations append synchronously; running turns claim steering at their next step.
+        if (agent.status === 'running') agent.steer(message)
+        else agent.followup(message)
         const flushed = await this.ctx.sessions.flush(agent.session)
         if (!flushed) throw new Error('Session persistence did not acknowledge the reminder')
         const deliveredAt = new Date(Date.now()).toISOString()

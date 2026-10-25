@@ -22,7 +22,9 @@ async function setup(tasks: ScheduleTask[], options: Parameters<typeof harness>[
   const test = await harness(options); tests.push(test)
   const agent = agentFor(test.ctx)
   const followup = vi.fn<Agent['followup']>()
+  const steer = vi.fn<Agent['steer']>()
   agent.followup = followup
+  agent.steer = steer
   test.resolve.mockResolvedValue({ agent })
   const commit = vi.fn(async (task: ScheduleTask) => {
     const index = tasks.findIndex(current => current.record.id === task.record.id)
@@ -30,7 +32,7 @@ async function setup(tasks: ScheduleTask[], options: Parameters<typeof harness>[
   })
   const runtime = new ScheduleRuntime(test.ctx, () => tasks, work => work(), commit, { days: 30, records: 200 }, test.resolveAgent)
   runtimes.push(runtime)
-  return { ...test, agent, followup, runtime, commit }
+  return { ...test, agent, followup, steer, runtime, commit }
 }
 function task(record: ScheduleTask['record']): ScheduleTask {
   return { sessionId: SessionId('original'), record, status: 'active' }
@@ -59,6 +61,18 @@ it('seeds legacy history only from its actual receipt and appends through wall-c
 })
 
 describe('Host Schedule timer', () => {
+  it('steers a running Agent before acknowledging the due reminder', async () => {
+    const tasks = [task(createAfterScheduleRecord(ScheduleId('running'), 'Inspect now', 1, Date.now() - 2000, 'Inspect now'))]
+    const test = await setup(tasks)
+    Object.defineProperty(test.agent, 'status', { value: 'running' })
+    test.runtime.requestDrive()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(test.steer).toHaveBeenCalledWith(expect.objectContaining({ source: { kind: 'schedule' } }))
+    expect(test.followup).not.toHaveBeenCalled()
+    expect(test.flush).toHaveBeenCalled()
+    expect(tasks[0]?.lastDelivery?.messageId).toBe(test.steer.mock.calls[0]![0].id)
+  })
+
   it('keeps reminders unacknowledged when no Session activation provider is mounted', async () => {
     const tasks = [task(createAfterScheduleRecord(ScheduleId('unavailable'), 'Remember', 2, Date.now(), 'Remember'))]
     const test = await setup(tasks, { sessionController: false })
